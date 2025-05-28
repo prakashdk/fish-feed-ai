@@ -1,5 +1,4 @@
-import type { DeviceDto } from "@/common/dto/Device.dto";
-import { Card } from "../../components/Card";
+import type { Device } from "@/dto/device.dto";
 import {
   FaCloudRain,
   FaTemperatureHigh,
@@ -7,6 +6,7 @@ import {
   FaTint,
   FaWater,
 } from "react-icons/fa";
+import { Card } from "../../components/Card";
 import { InsetCard } from "../../components/InsetCard";
 
 interface PondAttributes {
@@ -19,11 +19,11 @@ interface PondAttributes {
 }
 
 type PondMonitorCardProps = {
-  device: DeviceDto<PondAttributes>;
+  device: Device;
 };
 
 export const PondMonitorCard = ({ device }: PondMonitorCardProps) => {
-  const { ph, turbidity, tds, temperature, rain, oxygenLevel } = device.data;
+  const { ph, turbidity, tds, temperature, rain, oxygenLevel } = {};
 
   const metrics = [
     {

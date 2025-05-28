@@ -1,67 +1,61 @@
-import { useState, useEffect } from "react";
-import { FiEdit2, FiPlus, FiX, FiSave } from "react-icons/fi";
+import type { Pond } from "@/dto/pond.dto";
+import { useEffect, useState } from "react";
+import { FiEdit2, FiPlus, FiX } from "react-icons/fi";
+import { PondService } from "../services/pond.service";
+import { PondForm } from "../forms/PondForm";
+import { useOrganisation } from "../hooks/useOrganisation";
 
-interface Pond {
-  id: string;
-  name: string;
-  location?: string;
-  size_sq_m: number;
-  depth_m: number;
-  stocking_date?: string; // ISO string
-  stocking_density?: number;
-  water_type?: string;
-  status: string;
-  is_active: boolean;
-}
+const defaultNewPond: Partial<Pond> = {
+  name: "",
+  location: "",
+  size_sq_m: 0,
+  depth_m: 0,
+  stocking_date: "",
+  stocking_density: 0,
+  water_type: "",
+  status: "active",
+  is_active: true,
+};
 
 export const Ponds = () => {
   const [ponds, setPonds] = useState<Pond[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
   const [modalOpen, setModalOpen] = useState(false);
   const [editingPond, setEditingPond] = useState<Partial<Pond> | null>(null);
+  const [saving, setSaving] = useState(false);
+
+  const organisation = useOrganisation((state) => state.organisation);
+  const organisationLoading = useOrganisation((state) => state.loading);
 
   useEffect(() => {
-    // TODO: fetch ponds API
-    const dummyPonds: Pond[] = [
-      {
-        id: "1",
-        name: "Pond Alpha",
-        location: "North Field",
-        size_sq_m: 1500,
-        depth_m: 2.5,
-        stocking_date: "2024-04-10",
-        stocking_density: 300,
-        water_type: "Freshwater",
-        status: "active",
-        is_active: true,
-      },
-      {
-        id: "2",
-        name: "Pond Beta",
-        location: "East Side",
-        size_sq_m: 900,
-        depth_m: 1.8,
-        stocking_date: "2024-03-22",
-        stocking_density: 250,
-        water_type: "Brackish",
-        status: "maintenance",
-        is_active: true,
-      },
-    ];
-    setPonds(dummyPonds);
-  }, []);
+    async function fetchPonds() {
+      setLoading(true);
+      setError(null);
+      try {
+        const data = await PondService.list(organisation?.id!);
+        setPonds(data);
+      } catch (err) {
+        setError("Failed to load ponds.");
+      } finally {
+        setLoading(false);
+      }
+    }
+    if (organisation) {
+      fetchPonds();
+    }
+  }, [organisation]);
+
+  useEffect(() => {
+    if (organisation) {
+      // safe to fetch ponds now
+    }
+  }, [organisation]);
 
   function openModal(pond?: Pond) {
     setEditingPond(
-      pond
-        ? { ...pond }
-        : {
-            id: `temp-${Date.now()}`,
-            name: "",
-            size_sq_m: 0,
-            depth_m: 0,
-            status: "active",
-            is_active: true,
-          }
+      pond ? { ...pond } : { ...defaultNewPond, id: `temp-${Date.now()}` }
     );
     setModalOpen(true);
   }
@@ -71,21 +65,27 @@ export const Ponds = () => {
     setEditingPond(null);
   }
 
-  function savePond() {
+  async function savePond() {
     if (!editingPond) return;
-    // TODO: call API to save (create or update)
-    setPonds((prev) => {
-      const exists = prev.find((p) => p.id === editingPond.id);
-      if (exists) {
-        // update
-        return prev.map((p) =>
-          p.id === editingPond.id ? (editingPond as Pond) : p
+    setSaving(true);
+    try {
+      if (editingPond.id?.toString().startsWith("temp-")) {
+        const created = await PondService.create(
+          organisation?.id!,
+          editingPond as Omit<Pond, "id" | "created_at" | "updated_at">
+        );
+        setPonds((prev) => [created, ...prev]);
+      } else {
+        setPonds((prev) =>
+          prev.map((p) => (p.id === editingPond.id ? (editingPond as Pond) : p))
         );
       }
-      // add new
-      return [editingPond as Pond, ...prev];
-    });
-    closeModal();
+      closeModal();
+    } catch {
+      setError("Failed to save pond.");
+    } finally {
+      setSaving(false);
+    }
   }
 
   function onChange(field: keyof Pond, value: any) {
@@ -93,187 +93,115 @@ export const Ponds = () => {
   }
 
   return (
-    <section className="max-w-6xl mx-auto p-6 bg-white rounded shadow space-y-6">
-      <h1 className="text-3xl font-bold mb-6">Ponds</h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+    <section className="max-w-7xl mx-auto p-8 bg-white rounded-lg shadow-lg space-y-8">
+      <header className="flex justify-between items-center">
+        <h1 className="text-4xl font-extrabold text-aqua-700 tracking-tight">
+          Ponds
+        </h1>
+        <button
+          onClick={() => openModal()}
+          className="inline-flex items-center gap-2 rounded-full bg-green-600 px-6 py-3 text-white font-semibold shadow-lg hover:bg-green-700 transition"
+          aria-label="Add new pond"
+        >
+          <FiPlus size={20} />
+          Add New Pond
+        </button>
+      </header>
+
+      {loading && (
+        <p className="text-center text-aqua-600 font-semibold animate-pulse">
+          Loading ponds...
+        </p>
+      )}
+      {error && (
+        <p className="text-center text-red-600 font-semibold bg-red-100 p-3 rounded-md">
+          {error}
+        </p>
+      )}
+
+      {!loading && ponds.length === 0 && (
+        <p className="text-center text-gray-500 italic">No ponds found.</p>
+      )}
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
         {ponds.map((pond) => (
           <div
             key={pond.id}
-            className="bg-gray-50 p-4 rounded shadow flex flex-col justify-between"
+            className="bg-gradient-to-br from-aqua-50 to-white p-6 rounded-2xl shadow-md flex flex-col justify-between hover:shadow-xl transition"
           >
             <div>
-              <h2 className="text-xl font-semibold mb-2">
+              <h2 className="text-2xl font-bold text-aqua-900 mb-3 truncate">
                 {pond.name || "Untitled Pond"}
               </h2>
-              <p>
-                <span className="font-semibold">Size:</span> {pond.size_sq_m} m²
-              </p>
-              <p>
-                <span className="font-semibold">Depth:</span> {pond.depth_m} m
-              </p>
-              <p>
-                <span className="font-semibold">Status:</span>{" "}
-                <span className="capitalize">{pond.status}</span>
-              </p>
+              <div className="space-y-2 text-gray-700">
+                <p>
+                  <span className="font-semibold">Size:</span>{" "}
+                  <span className="text-aqua-600">{pond.size_sq_m} m²</span>
+                </p>
+                <p>
+                  <span className="font-semibold">Depth:</span>{" "}
+                  <span className="text-aqua-600">{pond.depth_m} m</span>
+                </p>
+                <p>
+                  <span className="font-semibold">Status:</span>{" "}
+                  <span className="capitalize text-green-700 font-semibold">
+                    {pond.status}
+                  </span>
+                </p>
+                {pond.location && (
+                  <p>
+                    <span className="font-semibold">Location:</span>{" "}
+                    {pond.location}
+                  </p>
+                )}
+              </div>
             </div>
 
             <button
               onClick={() => openModal(pond)}
-              className="mt-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded px-4 py-2 flex items-center justify-center gap-2"
+              className="mt-6 inline-flex items-center justify-center gap-2 rounded-full bg-aqua-600 px-5 py-2 font-semibold shadow-md hover:bg-aqua-700 transition"
+              aria-label={`Edit pond ${pond.name}`}
             >
-              <FiEdit2 />
+              <FiEdit2 size={18} />
               View / Edit
             </button>
           </div>
         ))}
       </div>
-      <button
-        onClick={() => openModal()}
-        className="mt-6 bg-green-600 hover:bg-green-700 text-white font-semibold rounded px-6 py-3 flex items-center gap-2 mx-auto"
-      >
-        <FiPlus />
-        Add New Pond
-      </button>
-      {/* Modal */}
+
       {modalOpen && editingPond && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded max-w-lg w-full p-6 relative shadow-lg max-h-[90vh] overflow-y-auto">
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="modal-title"
+          className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-6"
+        >
+          <div className="bg-white rounded-3xl max-w-3xl w-full p-8 relative shadow-2xl overflow-auto max-h-[90vh]">
             <button
-              onClick={closeModal}
-              className="absolute top-4 right-4 text-gray-500 hover:text-gray-800"
               aria-label="Close modal"
+              onClick={closeModal}
+              className="absolute top-5 right-5 text-gray-500 hover:text-gray-700 transition"
             >
-              <FiX size={24} />
+              <FiX size={26} />
             </button>
-            <h2 className="text-2xl font-bold mb-4">
+            <h2
+              id="modal-title"
+              className="text-3xl font-extrabold text-aqua-800 mb-6 tracking-wide"
+            >
               {editingPond.id?.toString().startsWith("temp-")
                 ? "Add New Pond"
-                : "Edit Pond"}
+                : `Edit Pond: ${editingPond.name}`}
             </h2>
-            {/* Form fields */}
-            <div className="space-y-4">
-              <label className="block">
-                <span className="font-semibold">Name</span>
-                <input
-                  type="text"
-                  className="mt-1 block w-full border rounded px-3 py-2"
-                  value={editingPond.name || ""}
-                  onChange={(e) => onChange("name", e.target.value)}
-                />
-              </label>
-
-              <label className="block">
-                <span className="font-semibold">Location</span>
-                <input
-                  type="text"
-                  className="mt-1 block w-full border rounded px-3 py-2"
-                  value={editingPond.location || ""}
-                  onChange={(e) => onChange("location", e.target.value)}
-                />
-              </label>
-
-              <label className="block">
-                <span className="font-semibold">Size (m²)</span>
-                <input
-                  type="number"
-                  step="0.01"
-                  className="mt-1 block w-full border rounded px-3 py-2"
-                  value={editingPond.size_sq_m || 0}
-                  onChange={(e) =>
-                    onChange("size_sq_m", parseFloat(e.target.value) || 0)
-                  }
-                />
-              </label>
-
-              <label className="block">
-                <span className="font-semibold">Depth (m)</span>
-                <input
-                  type="number"
-                  step="0.01"
-                  className="mt-1 block w-full border rounded px-3 py-2"
-                  value={editingPond.depth_m || 0}
-                  onChange={(e) =>
-                    onChange("depth_m", parseFloat(e.target.value) || 0)
-                  }
-                />
-              </label>
-
-              <label className="block">
-                <span className="font-semibold">Stocking Date</span>
-                <input
-                  type="date"
-                  className="mt-1 block w-full border rounded px-3 py-2"
-                  value={editingPond.stocking_date || ""}
-                  onChange={(e) => onChange("stocking_date", e.target.value)}
-                />
-              </label>
-
-              <label className="block">
-                <span className="font-semibold">Stocking Density</span>
-                <input
-                  type="number"
-                  step="0.01"
-                  className="mt-1 block w-full border rounded px-3 py-2"
-                  value={editingPond.stocking_density || ""}
-                  onChange={(e) =>
-                    onChange(
-                      "stocking_density",
-                      parseFloat(e.target.value) || 0
-                    )
-                  }
-                />
-              </label>
-
-              <label className="block">
-                <span className="font-semibold">Water Type</span>
-                <input
-                  type="text"
-                  className="mt-1 block w-full border rounded px-3 py-2"
-                  value={editingPond.water_type || ""}
-                  onChange={(e) => onChange("water_type", e.target.value)}
-                />
-              </label>
-
-              <label className="block">
-                <span className="font-semibold">Status</span>
-                <select
-                  className="mt-1 block w-full border rounded px-3 py-2"
-                  value={editingPond.status || "active"}
-                  onChange={(e) => onChange("status", e.target.value)}
-                >
-                  <option value="active">Active</option>
-                  <option value="maintenance">Maintenance</option>
-                  <option value="harvested">Harvested</option>
-                </select>
-              </label>
-
-              <label className="inline-flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  checked={editingPond.is_active ?? true}
-                  onChange={(e) => onChange("is_active", e.target.checked)}
-                />
-                <span className="font-semibold">Is Active</span>
-              </label>
-            </div>
-            <div className="flex justify-end mt-6 gap-4">
-              <button
-                onClick={closeModal}
-                className="px-5 py-2 border rounded hover:bg-gray-100"
-              >
-                Cancel
-              </button>{" "}
-              <button
-                onClick={savePond}
-                className="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded flex items-center gap-2"
-              >
-                {" "}
-                <FiSave /> Save{" "}
-              </button>{" "}
-            </div>{" "}
-          </div>{" "}
+            <PondForm
+              pond={editingPond}
+              onChange={onChange}
+              onCancel={closeModal}
+              onSave={savePond}
+              saving={saving}
+            />
+          </div>
         </div>
-      )}{" "}
+      )}
     </section>
   );
 };

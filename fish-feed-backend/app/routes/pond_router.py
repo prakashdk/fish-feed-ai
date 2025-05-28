@@ -12,8 +12,8 @@ pond_router = APIRouter(prefix="/org/{org_id}/ponds")
 
 @pond_router.post("/", response_model=PondDto, status_code=status.HTTP_201_CREATED)
 def create_pond(org_id: UUID, payload: PondCreate, db: Session = Depends(get_db)):
-    if payload.organization_id != org_id:
-        raise HTTPException(status_code=400, detail="Organization ID mismatch")
+
+    payload.organization_id = org_id
 
     service = PondService(db)
     pond = service.create_pond(payload.dict())

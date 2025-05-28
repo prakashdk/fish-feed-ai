@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
 import { Dashboard } from "./layout/Dashboard";
@@ -7,9 +7,15 @@ import { Sidebar } from "./layout/SideBar";
 import { TopBar } from "./layout/TopBar";
 import { Account } from "./layout/Account";
 import { Ponds } from "./layout/Ponds";
+import { useOrganisation } from "./hooks/useOrganisation";
 
 function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true); // Sidebar state
+  const fetchOrganisation = useOrganisation((state) => state.fetchOrganisation);
+
+  useEffect(() => {
+    fetchOrganisation();
+  }, [fetchOrganisation]);
 
   const toggleSidebar = () => {
     setIsSidebarOpen((prev) => !prev);

@@ -1,15 +1,15 @@
 import { DeviceType } from "../common/enums/DeviceType";
 import { PondMonitorCard } from "./Devices/PondMonitorCard";
 import { FeedLeftoverCard } from "./Devices/FeedLeftoverCard";
-import type { DeviceDto } from "@/common/dto/Device.dto";
+import type { Device } from "../dto/device.dto";
 
 type DeviceCardProps = {
-  device: DeviceDto;
+  device: Device;
 };
 
 export const DeviceFactory = ({ device }: DeviceCardProps) => {
   // Dynamically render the component based on device type
-  switch (device.type) {
+  switch (device.device_type) {
     case DeviceType.PondMonitor:
       return <PondMonitorCard device={device} />;
     case DeviceType.FeedCollector:

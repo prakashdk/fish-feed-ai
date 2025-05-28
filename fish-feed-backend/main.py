@@ -11,11 +11,24 @@ from app.routes.species_routes import species_router
 from app.routes.pond_router import pond_router
 from app.routes.organisation_routes import org_router
 from app.routes.device_routes import device_router
+from fastapi.middleware.cors import CORSMiddleware
 
 load_dotenv()
 
 # Create FastAPI app
 app = FastAPI()
+
+origins = [
+    "http://localhost:5173",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,  # Use ["*"] to allow all origins (not recommended for production)
+    allow_credentials=True,
+    allow_methods=["*"],  # Allow all HTTP methods
+    allow_headers=["*"],  # Allow all headers
+)
 
 
 # Health check route

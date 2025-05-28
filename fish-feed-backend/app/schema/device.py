@@ -17,7 +17,7 @@ class Device(Base):
     __tablename__ = "devices"
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    pond_id = Column(UUID(as_uuid=True), ForeignKey("ponds.id"), nullable=False)
+    pond_id = Column(UUID(as_uuid=True), ForeignKey("ponds.id"), nullable=True)
     device_type = Column(String, nullable=False)
     device_id = Column(String, nullable=True, unique=True)
     model = Column(String, nullable=True)

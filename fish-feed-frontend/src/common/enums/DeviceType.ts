@@ -1,5 +1,5 @@
 export enum DeviceType {
-  PondMonitor = "Pond Monitor",
-  FeedCollector = "Feed Collector",
+  PondMonitor = "POND_MONITOR",
+  FeedCollector = "FEED_COLLECTOR",
   // Add more device types here as needed
 }

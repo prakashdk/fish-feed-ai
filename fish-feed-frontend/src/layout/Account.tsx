@@ -1,68 +1,60 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { FiEdit2, FiSave, FiX } from "react-icons/fi";
-
-interface Organization {
-  name: string;
-  address?: string;
-  email?: string;
-  phone?: string;
-}
+import type { Organization } from "../dto/organisation.dto";
+import { updateOrganization } from "../services/organisation.service";
+import { useOrganisation } from "../hooks/useOrganisation";
 
 export const Account = () => {
-  const [org, setOrg] = useState<Organization | null>(null);
-  const [editMode, setEditMode] = useState(false);
   const [draft, setDraft] = useState<Organization | null>(null);
+  const [editMode, setEditMode] = useState(false);
+  const [saving, setSaving] = useState(false);
 
-  // Placeholder: fetch organization info on mount
+  const { organisation, loading } = useOrganisation();
+
+  // Sync draft when organisation changes
   useEffect(() => {
-    async function fetchOrg() {
-      // TODO: Replace with your API call
-      const fetchedOrg = {
-        name: "Acme Corporation",
-        address: "123 Main St",
-        email: "contact@acme.com",
-        phone: "+1-234-567-890",
-      };
-      setOrg(fetchedOrg);
-      setDraft(fetchedOrg);
+    if (organisation) {
+      setDraft(organisation);
     }
-    fetchOrg();
-  }, []);
+  }, [organisation]);
 
-  const startEdit = () => {
-    if (org) setDraft(org);
-    setEditMode(true);
-  };
-
-  const cancelEdit = () => {
-    if (org) setDraft(org);
-    setEditMode(false);
-  };
-
-  const saveChanges = async () => {
-    if (!draft) return;
-    // TODO: Replace with your API call to save `draft`
-    // await api.saveOrganization(draft)
-    setOrg(draft);
-    setEditMode(false);
-  };
+  if (loading) return <div>Loading organization info...</div>;
 
   const onChange = (field: keyof Organization, value: string) => {
     setDraft((prev) => (prev ? { ...prev, [field]: value } : prev));
   };
 
-  if (!org) return <div>Loading organization info...</div>;
+  const saveChanges = async () => {
+    if (!draft) return;
+    try {
+      setSaving(true);
+      const updated = await updateOrganization(draft);
+      setDraft(updated);
+      setEditMode(false);
+    } catch (err) {
+      console.error("Update failed", err);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const cancelEdit = () => {
+    if (organisation) setDraft(organisation);
+    setEditMode(false);
+  };
+
+  if (loading)
+    return (
+      <div className="p-4 text-gray-500">Loading organization info...</div>
+    );
 
   return (
-    <section className="max-w-3xl mx-auto p-6 bg-white rounded shadow">
+    <section className="max-w-3xl mt-2 mx-auto p-6 bg-white rounded-xl shadow">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-semibold text-gray-900">
-          Organization Info
-        </h2>
+        <h2 className="text-xl font-bold text-gray-900">Organization Info</h2>
         {!editMode ? (
           <button
-            onClick={startEdit}
-            aria-label="Edit Organization Info"
+            onClick={() => setEditMode(true)}
             className="text-indigo-600 hover:text-indigo-800"
           >
             <FiEdit2 size={20} />
@@ -71,14 +63,13 @@ export const Account = () => {
           <div className="flex gap-3">
             <button
               onClick={saveChanges}
-              aria-label="Save Organization Info"
               className="text-green-600 hover:text-green-800 flex items-center gap-1"
+              disabled={saving}
             >
-              <FiSave size={20} /> Save
+              <FiSave size={20} /> {saving ? "Saving..." : "Save"}
             </button>
             <button
               onClick={cancelEdit}
-              aria-label="Cancel Editing Organization Info"
               className="text-red-600 hover:text-red-800 flex items-center gap-1"
             >
               <FiX size={20} /> Cancel
@@ -88,70 +79,29 @@ export const Account = () => {
       </div>
 
       <div className="space-y-4">
-        <div className="flex items-center gap-4">
-          <label className="w-32 font-semibold text-gray-700">Name:</label>
-          {editMode ? (
-            <input
-              type="text"
-              className="flex-1 border border-gray-300 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-indigo-400"
-              value={draft?.name || ""}
-              onChange={(e) => onChange("name", e.target.value)}
-              autoFocus
-            />
-          ) : (
-            <p className="flex-1 text-gray-900">
-              {org.name || <i className="text-gray-400">Not set</i>}
-            </p>
-          )}
-        </div>
-
-        <div className="flex items-center gap-4">
-          <label className="w-32 font-semibold text-gray-700">Address:</label>
-          {editMode ? (
-            <input
-              type="text"
-              className="flex-1 border border-gray-300 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-indigo-400"
-              value={draft?.address || ""}
-              onChange={(e) => onChange("address", e.target.value)}
-            />
-          ) : (
-            <p className="flex-1 text-gray-900">
-              {org.address || <i className="text-gray-400">Not set</i>}
-            </p>
-          )}
-        </div>
-
-        <div className="flex items-center gap-4">
-          <label className="w-32 font-semibold text-gray-700">Email:</label>
-          {editMode ? (
-            <input
-              type="email"
-              className="flex-1 border border-gray-300 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-indigo-400"
-              value={draft?.email || ""}
-              onChange={(e) => onChange("email", e.target.value)}
-            />
-          ) : (
-            <p className="flex-1 text-gray-900">
-              {org.email || <i className="text-gray-400">Not set</i>}
-            </p>
-          )}
-        </div>
-
-        <div className="flex items-center gap-4">
-          <label className="w-32 font-semibold text-gray-700">Phone:</label>
-          {editMode ? (
-            <input
-              type="tel"
-              className="flex-1 border border-gray-300 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-indigo-400"
-              value={draft?.phone || ""}
-              onChange={(e) => onChange("phone", e.target.value)}
-            />
-          ) : (
-            <p className="flex-1 text-gray-900">
-              {org.phone || <i className="text-gray-400">Not set</i>}
-            </p>
-          )}
-        </div>
+        {["name", "address", "email", "phone"].map((field) => (
+          <div key={field} className="flex items-center gap-4">
+            <label className="w-32 font-semibold text-gray-700 capitalize">
+              {field}:
+            </label>
+            {editMode ? (
+              <input
+                type="text"
+                className="flex-1 border border-gray-300 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                value={draft?.[field as keyof Organization] || ""}
+                onChange={(e) =>
+                  onChange(field as keyof Organization, e.target.value)
+                }
+              />
+            ) : (
+              <p className="flex-1 text-gray-900">
+                {organisation?.[field as keyof Organization] || (
+                  <i className="text-gray-400">Not set</i>
+                )}
+              </p>
+            )}
+          </div>
+        ))}
       </div>
     </section>
   );

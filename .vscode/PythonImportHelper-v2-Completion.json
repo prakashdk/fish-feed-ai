@@ -1413,6 +1413,14 @@
         "documentation": {}
     },
     {
+        "label": "UUID",
+        "importPath": "uuid",
+        "description": "uuid",
+        "isExtraImport": true,
+        "detail": "uuid",
+        "documentation": {}
+    },
+    {
         "label": "logging",
         "kind": 6,
         "isExtraImport": true,
@@ -2487,6 +2495,14 @@
         "documentation": {}
     },
     {
+        "label": "CORSMiddleware",
+        "importPath": "fastapi.middleware.cors",
+        "description": "fastapi.middleware.cors",
+        "isExtraImport": true,
+        "detail": "fastapi.middleware.cors",
+        "documentation": {}
+    },
+    {
         "label": "matplotlib.pyplot",
         "kind": 6,
         "isExtraImport": true,
@@ -2617,7 +2633,7 @@
         "kind": 6,
         "importPath": "fish-feed-backend.app.models.device_dto",
         "description": "fish-feed-backend.app.models.device_dto",
-        "peekOfCode": "class DeviceCreate(DeviceBase):\n    pass\nclass DeviceUpdate(BaseModel):\n    device_type: Optional[str]\n    device_id: Optional[str]\n    model: Optional[str]\n    manufacturer: Optional[str]\n    status: Optional[str]\n    is_active: Optional[bool]\n    additional_attributes: Optional[dict]",
+        "peekOfCode": "class DeviceCreate(DeviceBase):\n    pass\nclass DeviceUpdate(BaseModel):\n    device_type: Optional[str] = None\n    device_id: Optional[str] = None\n    model: Optional[str] = None\n    manufacturer: Optional[str] = None\n    status: Optional[str] = None\n    is_active: Optional[bool] = None\n    additional_attributes: Optional[dict] = None",
         "detail": "fish-feed-backend.app.models.device_dto",
         "documentation": {}
     },
@@ -2626,7 +2642,7 @@
         "kind": 6,
         "importPath": "fish-feed-backend.app.models.device_dto",
         "description": "fish-feed-backend.app.models.device_dto",
-        "peekOfCode": "class DeviceUpdate(BaseModel):\n    device_type: Optional[str]\n    device_id: Optional[str]\n    model: Optional[str]\n    manufacturer: Optional[str]\n    status: Optional[str]\n    is_active: Optional[bool]\n    additional_attributes: Optional[dict]\n    installed_at: Optional[datetime]\n    last_maintenance_at: Optional[datetime]",
+        "peekOfCode": "class DeviceUpdate(BaseModel):\n    device_type: Optional[str] = None\n    device_id: Optional[str] = None\n    model: Optional[str] = None\n    manufacturer: Optional[str] = None\n    status: Optional[str] = None\n    is_active: Optional[bool] = None\n    additional_attributes: Optional[dict] = None\n    installed_at: Optional[datetime] = None\n    last_maintenance_at: Optional[datetime] = None",
         "detail": "fish-feed-backend.app.models.device_dto",
         "documentation": {}
     },
@@ -2698,7 +2714,7 @@
         "kind": 6,
         "importPath": "fish-feed-backend.app.models.pond_dto",
         "description": "fish-feed-backend.app.models.pond_dto",
-        "peekOfCode": "class PondBase(BaseModel):\n    name: str\n    location: Optional[str] = None\n    size: Optional[float] = None\n    is_active: Optional[bool] = True\n    additional_attributes: Optional[dict] = None\nclass PondCreate(PondBase):\n    organization_id: UUID\nclass PondUpdate(BaseModel):\n    name: Optional[str]",
+        "peekOfCode": "class PondBase(BaseModel):\n    name: str\n    location: Optional[str] = None\n    size_sq_m: Optional[float] = None  # Pond size in square meters\n    depth_m: Optional[float] = None  # Pond depth in meters\n    stocking_date: Optional[datetime] = None  # Date when stocked\n    stocking_density: Optional[int] = (\n        None  # Number of fish/shrimp per square meter\n    )\n    water_type: Optional[str] = None  # e.g., freshwater, brackish, marine",
         "detail": "fish-feed-backend.app.models.pond_dto",
         "documentation": {}
     },
@@ -2707,7 +2723,7 @@
         "kind": 6,
         "importPath": "fish-feed-backend.app.models.pond_dto",
         "description": "fish-feed-backend.app.models.pond_dto",
-        "peekOfCode": "class PondCreate(PondBase):\n    organization_id: UUID\nclass PondUpdate(BaseModel):\n    name: Optional[str]\n    location: Optional[str]\n    size: Optional[float]\n    is_active: Optional[bool]\n    additional_attributes: Optional[dict]\nclass PondDto(PondBase):\n    id: UUID",
+        "peekOfCode": "class PondCreate(PondBase):\n    organization_id: Optional[UUID] = None\nclass PondUpdate(BaseModel):\n    name: str\n    location: Optional[str] = None\n    size_sq_m: Optional[float] = None  # Pond size in square meters\n    depth_m: Optional[float] = None  # Pond depth in meters\n    stocking_date: Optional[datetime] = None  # Date when stocked\n    stocking_density: Optional[int] = (\n        None  # Number of fish/shrimp per square meter",
         "detail": "fish-feed-backend.app.models.pond_dto",
         "documentation": {}
     },
@@ -2716,7 +2732,7 @@
         "kind": 6,
         "importPath": "fish-feed-backend.app.models.pond_dto",
         "description": "fish-feed-backend.app.models.pond_dto",
-        "peekOfCode": "class PondUpdate(BaseModel):\n    name: Optional[str]\n    location: Optional[str]\n    size: Optional[float]\n    is_active: Optional[bool]\n    additional_attributes: Optional[dict]\nclass PondDto(PondBase):\n    id: UUID\n    organization_id: UUID\n    created_at: datetime",
+        "peekOfCode": "class PondUpdate(BaseModel):\n    name: str\n    location: Optional[str] = None\n    size_sq_m: Optional[float] = None  # Pond size in square meters\n    depth_m: Optional[float] = None  # Pond depth in meters\n    stocking_date: Optional[datetime] = None  # Date when stocked\n    stocking_density: Optional[int] = (\n        None  # Number of fish/shrimp per square meter\n    )\n    water_type: Optional[str] = None  # e.g., freshwater, brackish, marine",
         "detail": "fish-feed-backend.app.models.pond_dto",
         "documentation": {}
     },
@@ -2842,7 +2858,7 @@
         "kind": 2,
         "importPath": "fish-feed-backend.app.routes.device_routes",
         "description": "fish-feed-backend.app.routes.device_routes",
-        "peekOfCode": "def list_devices_by_pond(pond_id: UUID, db: Session = Depends(get_db)):\n    service = DeviceService(db)\n    return service.list_devices_by_pond(pond_id)\n@device_router.put(\"/{device_id}\", response_model=DeviceDto)\ndef update_device(\n    device_id: UUID, update_data: DeviceUpdate, db: Session = Depends(get_db)\n):\n    service = DeviceService(db)\n    updated_device = service.update_device(\n        device_id, update_data.dict(exclude_unset=True)",
+        "peekOfCode": "def list_devices_by_pond(pond_id: UUID, db: Session = Depends(get_db)):\n    service = DeviceService(db)\n    return service.list_devices_by_pond(pond_id)\n@device_router.put(\"/{device_id}\", response_model=DeviceDto)\ndef update_device(\n    device_id: UUID, update_data: DeviceUpdate, db: Session = Depends(get_db)\n):\n    update_data.device_id = device_id\n    service = DeviceService(db)\n    updated_device = service.update_device(",
         "detail": "fish-feed-backend.app.routes.device_routes",
         "documentation": {}
     },
@@ -2851,7 +2867,7 @@
         "kind": 2,
         "importPath": "fish-feed-backend.app.routes.device_routes",
         "description": "fish-feed-backend.app.routes.device_routes",
-        "peekOfCode": "def update_device(\n    device_id: UUID, update_data: DeviceUpdate, db: Session = Depends(get_db)\n):\n    service = DeviceService(db)\n    updated_device = service.update_device(\n        device_id, update_data.dict(exclude_unset=True)\n    )\n    if not updated_device:\n        raise HTTPException(status_code=404, detail=\"Device not found\")\n    return updated_device",
+        "peekOfCode": "def update_device(\n    device_id: UUID, update_data: DeviceUpdate, db: Session = Depends(get_db)\n):\n    update_data.device_id = device_id\n    service = DeviceService(db)\n    updated_device = service.update_device(\n        device_id, update_data.model_dump(exclude_unset=True)\n    )\n    if not updated_device:\n        raise HTTPException(status_code=404, detail=\"Device not found\")",
         "detail": "fish-feed-backend.app.routes.device_routes",
         "documentation": {}
     },
@@ -2941,7 +2957,7 @@
         "kind": 2,
         "importPath": "fish-feed-backend.app.routes.pond_router",
         "description": "fish-feed-backend.app.routes.pond_router",
-        "peekOfCode": "def create_pond(org_id: UUID, payload: PondCreate, db: Session = Depends(get_db)):\n    if payload.organization_id != org_id:\n        raise HTTPException(status_code=400, detail=\"Organization ID mismatch\")\n    service = PondService(db)\n    pond = service.create_pond(payload.dict())\n    return pond\n@pond_router.get(\"/\", response_model=List[PondDto])\ndef list_ponds(org_id: UUID, db: Session = Depends(get_db)):\n    service = PondService(db)\n    return service.list_ponds_by_org(org_id)",
+        "peekOfCode": "def create_pond(org_id: UUID, payload: PondCreate, db: Session = Depends(get_db)):\n    payload.organization_id = org_id\n    service = PondService(db)\n    pond = service.create_pond(payload.dict())\n    return pond\n@pond_router.get(\"/\", response_model=List[PondDto])\ndef list_ponds(org_id: UUID, db: Session = Depends(get_db)):\n    service = PondService(db)\n    return service.list_ponds_by_org(org_id)\n@pond_router.get(\"/{pond_id}\", response_model=PondDto)",
         "detail": "fish-feed-backend.app.routes.pond_router",
         "documentation": {}
     },
@@ -2986,7 +3002,7 @@
         "kind": 5,
         "importPath": "fish-feed-backend.app.routes.pond_router",
         "description": "fish-feed-backend.app.routes.pond_router",
-        "peekOfCode": "pond_router = APIRouter(prefix=\"/org/{org_id}/ponds\")\n@pond_router.post(\"/\", response_model=PondDto, status_code=status.HTTP_201_CREATED)\ndef create_pond(org_id: UUID, payload: PondCreate, db: Session = Depends(get_db)):\n    if payload.organization_id != org_id:\n        raise HTTPException(status_code=400, detail=\"Organization ID mismatch\")\n    service = PondService(db)\n    pond = service.create_pond(payload.dict())\n    return pond\n@pond_router.get(\"/\", response_model=List[PondDto])\ndef list_ponds(org_id: UUID, db: Session = Depends(get_db)):",
+        "peekOfCode": "pond_router = APIRouter(prefix=\"/org/{org_id}/ponds\")\n@pond_router.post(\"/\", response_model=PondDto, status_code=status.HTTP_201_CREATED)\ndef create_pond(org_id: UUID, payload: PondCreate, db: Session = Depends(get_db)):\n    payload.organization_id = org_id\n    service = PondService(db)\n    pond = service.create_pond(payload.dict())\n    return pond\n@pond_router.get(\"/\", response_model=List[PondDto])\ndef list_ponds(org_id: UUID, db: Session = Depends(get_db)):\n    service = PondService(db)",
         "detail": "fish-feed-backend.app.routes.pond_router",
         "documentation": {}
     },
@@ -2995,7 +3011,7 @@
         "kind": 5,
         "importPath": "fish-feed-backend.app.routes.sensor_routes",
         "description": "fish-feed-backend.app.routes.sensor_routes",
-        "peekOfCode": "sensor_router = APIRouter()\nsensor = WaterQualitySensor()\n@sensor_router.post(\"/update\")\nasync def update_sensor_data(data: SensorData):\n    \"\"\"Update sensor data and broadcast the new values.\"\"\"\n    try:\n        if data.ph is not None:\n            sensor.set_ph(data.ph)\n        if data.turbidity is not None:\n            sensor.set_turbidity(data.turbidity)",
+        "peekOfCode": "sensor_router = APIRouter()\nsensor = WaterQualitySensor()\n@sensor_router.post(\"/{device_id}/pond-monitor\")\nasync def update_sensor_data(device_id: UUID, data: SensorData):\n    \"\"\"Update sensor data and broadcast the new values.\"\"\"\n    try:\n        if data.ph is not None:\n            sensor.set_ph(data.ph)\n        if data.turbidity is not None:\n            sensor.set_turbidity(data.turbidity)",
         "detail": "fish-feed-backend.app.routes.sensor_routes",
         "documentation": {}
     },
@@ -3004,7 +3020,7 @@
         "kind": 5,
         "importPath": "fish-feed-backend.app.routes.sensor_routes",
         "description": "fish-feed-backend.app.routes.sensor_routes",
-        "peekOfCode": "sensor = WaterQualitySensor()\n@sensor_router.post(\"/update\")\nasync def update_sensor_data(data: SensorData):\n    \"\"\"Update sensor data and broadcast the new values.\"\"\"\n    try:\n        if data.ph is not None:\n            sensor.set_ph(data.ph)\n        if data.turbidity is not None:\n            sensor.set_turbidity(data.turbidity)\n        if data.oxygen_level is not None:",
+        "peekOfCode": "sensor = WaterQualitySensor()\n@sensor_router.post(\"/{device_id}/pond-monitor\")\nasync def update_sensor_data(device_id: UUID, data: SensorData):\n    \"\"\"Update sensor data and broadcast the new values.\"\"\"\n    try:\n        if data.ph is not None:\n            sensor.set_ph(data.ph)\n        if data.turbidity is not None:\n            sensor.set_turbidity(data.turbidity)\n        if data.oxygen_level is not None:",
         "detail": "fish-feed-backend.app.routes.sensor_routes",
         "documentation": {}
     },
@@ -3076,7 +3092,7 @@
         "kind": 6,
         "importPath": "fish-feed-backend.app.schema.device",
         "description": "fish-feed-backend.app.schema.device",
-        "peekOfCode": "class Device(Base):\n    __tablename__ = \"devices\"\n    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)\n    pond_id = Column(UUID(as_uuid=True), ForeignKey(\"ponds.id\"), nullable=False)\n    device_type = Column(String, nullable=False)\n    device_id = Column(String, nullable=True, unique=True)\n    model = Column(String, nullable=True)\n    manufacturer = Column(String, nullable=True)\n    additional_attributes = Column(JSONB, nullable=True)\n    status = Column(String, nullable=False, default=\"active\")",
+        "peekOfCode": "class Device(Base):\n    __tablename__ = \"devices\"\n    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)\n    pond_id = Column(UUID(as_uuid=True), ForeignKey(\"ponds.id\"), nullable=True)\n    device_type = Column(String, nullable=False)\n    device_id = Column(String, nullable=True, unique=True)\n    model = Column(String, nullable=True)\n    manufacturer = Column(String, nullable=True)\n    additional_attributes = Column(JSONB, nullable=True)\n    status = Column(String, nullable=False, default=\"active\")",
         "detail": "fish-feed-backend.app.schema.device",
         "documentation": {}
     },
@@ -3517,7 +3533,16 @@
         "kind": 5,
         "importPath": "fish-feed-backend.main",
         "description": "fish-feed-backend.main",
-        "peekOfCode": "app = FastAPI()\n# Health check route\n@app.get(\"/ping\")\ndef ping():\n    return {\"status\": \"ok\", \"message\": \"pong\"}\n# Register API routers\napp.include_router(sensor_router, prefix=\"/api/sensor\", tags=[\"sensor\"])\napp.include_router(feed_router, prefix=\"/api\", tags=[\"feed\"])\napp.include_router(species_router, prefix=\"/api/species\", tags=[\"species\"])\napp.include_router(org_router, prefix=\"/api/org\", tags=[\"organization\"])",
+        "peekOfCode": "app = FastAPI()\norigins = [\n    \"http://localhost:5173\",\n]\napp.add_middleware(\n    CORSMiddleware,\n    allow_origins=origins,  # Use [\"*\"] to allow all origins (not recommended for production)\n    allow_credentials=True,\n    allow_methods=[\"*\"],  # Allow all HTTP methods\n    allow_headers=[\"*\"],  # Allow all headers",
+        "detail": "fish-feed-backend.main",
+        "documentation": {}
+    },
+    {
+        "label": "origins",
+        "kind": 5,
+        "importPath": "fish-feed-backend.main",
+        "description": "fish-feed-backend.main",
+        "peekOfCode": "origins = [\n    \"http://localhost:5173\",\n]\napp.add_middleware(\n    CORSMiddleware,\n    allow_origins=origins,  # Use [\"*\"] to allow all origins (not recommended for production)\n    allow_credentials=True,\n    allow_methods=[\"*\"],  # Allow all HTTP methods\n    allow_headers=[\"*\"],  # Allow all headers\n)",
         "detail": "fish-feed-backend.main",
         "documentation": {}
     },

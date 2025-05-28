@@ -22,15 +22,16 @@ class DeviceCreate(DeviceBase):
 
 
 class DeviceUpdate(BaseModel):
-    device_type: Optional[str]
-    device_id: Optional[str]
-    model: Optional[str]
-    manufacturer: Optional[str]
-    status: Optional[str]
-    is_active: Optional[bool]
-    additional_attributes: Optional[dict]
-    installed_at: Optional[datetime]
-    last_maintenance_at: Optional[datetime]
+    device_type: Optional[str] = None
+    device_id: Optional[str] = None
+    model: Optional[str] = None
+    manufacturer: Optional[str] = None
+    status: Optional[str] = None
+    is_active: Optional[bool] = None
+    additional_attributes: Optional[dict] = None
+    installed_at: Optional[datetime] = None
+    last_maintenance_at: Optional[datetime] = None
+    pond_id: Optional[UUID] = None
 
 
 class DeviceDto(DeviceBase):

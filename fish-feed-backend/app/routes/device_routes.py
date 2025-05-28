@@ -36,9 +36,10 @@ def list_devices_by_pond(pond_id: UUID, db: Session = Depends(get_db)):
 def update_device(
     device_id: UUID, update_data: DeviceUpdate, db: Session = Depends(get_db)
 ):
+    update_data.device_id = device_id
     service = DeviceService(db)
     updated_device = service.update_device(
-        device_id, update_data.dict(exclude_unset=True)
+        device_id, update_data.model_dump(exclude_unset=True)
     )
     if not updated_device:
         raise HTTPException(status_code=404, detail="Device not found")
