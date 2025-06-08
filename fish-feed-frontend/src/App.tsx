@@ -7,15 +7,17 @@ import { Sidebar } from "./layout/SideBar";
 import { TopBar } from "./layout/TopBar";
 import { Account } from "./layout/Account";
 import { Ponds } from "./layout/Ponds";
-import { useOrganisation } from "./hooks/useOrganisation";
+import { useOrganization as useOrganization } from "./hooks/useOrganization";
+import { initDeviceSocket } from "./hooks/deviceSocketService";
 
 function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true); // Sidebar state
-  const fetchOrganisation = useOrganisation((state) => state.fetchOrganisation);
+  const fetchOrganization = useOrganization((state) => state.fetchOrganization);
 
   useEffect(() => {
-    fetchOrganisation();
-  }, [fetchOrganisation]);
+    fetchOrganization();
+    initDeviceSocket()
+  }, [fetchOrganization]);
 
   const toggleSidebar = () => {
     setIsSidebarOpen((prev) => !prev);

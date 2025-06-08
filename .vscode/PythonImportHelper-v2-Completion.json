@@ -3011,7 +3011,7 @@
         "kind": 5,
         "importPath": "fish-feed-backend.app.routes.sensor_routes",
         "description": "fish-feed-backend.app.routes.sensor_routes",
-        "peekOfCode": "sensor_router = APIRouter()\nsensor = WaterQualitySensor()\n@sensor_router.post(\"/{device_id}/pond-monitor\")\nasync def update_sensor_data(device_id: UUID, data: SensorData):\n    \"\"\"Update sensor data and broadcast the new values.\"\"\"\n    try:\n        if data.ph is not None:\n            sensor.set_ph(data.ph)\n        if data.turbidity is not None:\n            sensor.set_turbidity(data.turbidity)",
+        "peekOfCode": "sensor_router = APIRouter()\nsensor = WaterQualitySensor()\n@sensor_router.post(\"/pond-monitor/{device_id}\")\nasync def update_sensor_data(device_id: UUID, data: SensorData):\n    \"\"\"Update sensor data and broadcast the new values.\"\"\"\n    try:\n        if data.ph is not None:\n            sensor.set_ph(data.ph)\n        if data.turbidity is not None:\n            sensor.set_turbidity(data.turbidity)",
         "detail": "fish-feed-backend.app.routes.sensor_routes",
         "documentation": {}
     },
@@ -3020,7 +3020,7 @@
         "kind": 5,
         "importPath": "fish-feed-backend.app.routes.sensor_routes",
         "description": "fish-feed-backend.app.routes.sensor_routes",
-        "peekOfCode": "sensor = WaterQualitySensor()\n@sensor_router.post(\"/{device_id}/pond-monitor\")\nasync def update_sensor_data(device_id: UUID, data: SensorData):\n    \"\"\"Update sensor data and broadcast the new values.\"\"\"\n    try:\n        if data.ph is not None:\n            sensor.set_ph(data.ph)\n        if data.turbidity is not None:\n            sensor.set_turbidity(data.turbidity)\n        if data.oxygen_level is not None:",
+        "peekOfCode": "sensor = WaterQualitySensor()\n@sensor_router.post(\"/pond-monitor/{device_id}\")\nasync def update_sensor_data(device_id: UUID, data: SensorData):\n    \"\"\"Update sensor data and broadcast the new values.\"\"\"\n    try:\n        if data.ph is not None:\n            sensor.set_ph(data.ph)\n        if data.turbidity is not None:\n            sensor.set_turbidity(data.turbidity)\n        if data.oxygen_level is not None:",
         "detail": "fish-feed-backend.app.routes.sensor_routes",
         "documentation": {}
     },

@@ -2,13 +2,14 @@ from fastapi import APIRouter, HTTPException
 from app.sensors import WaterQualitySensor
 from app.utils.socket_connection_manager import socket_manager
 from app.models.sensor import SensorData
+import json
 from uuid import UUID
 
 sensor_router = APIRouter()
 sensor = WaterQualitySensor()
 
 
-@sensor_router.post("/{device_id}/pond-monitor")
+@sensor_router.post("/pond-monitor/{device_id}")
 async def update_sensor_data(device_id: UUID, data: SensorData):
     """Update sensor data and broadcast the new values."""
     try:
@@ -25,12 +26,12 @@ async def update_sensor_data(device_id: UUID, data: SensorData):
         if data.tds is not None:
             sensor.set_tds(data.tds)
 
-        message = {data: data.model_dump(), device_id: device_id}
+        message = dict()
+        message["data"] = data.model_dump_json()
+        message["device_id"] = str(device_id)
 
-        # Broadcast the data using the socket manager
-        await socket_manager.broadcast(
-            message
-        )  # .dict() converts Pydantic model to dict
+        # # Broadcast the data using the socket manager
+        await socket_manager.broadcast(message)
 
         return {"status": "success"}
     except Exception as e:

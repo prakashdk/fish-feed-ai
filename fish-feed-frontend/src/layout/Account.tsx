@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 import { FiEdit2, FiSave, FiX } from "react-icons/fi";
-import type { Organization } from "../dto/organisation.dto";
-import { updateOrganization } from "../services/organisation.service";
-import { useOrganisation } from "../hooks/useOrganisation";
+import type { Organization } from "../dto/organization.dto";
+import { updateOrganization } from "../services/organization.service";
+import { useOrganization } from "../hooks/useOrganization";
 
 export const Account = () => {
   const [draft, setDraft] = useState<Organization | null>(null);
   const [editMode, setEditMode] = useState(false);
   const [saving, setSaving] = useState(false);
 
-  const { organisation, loading } = useOrganisation();
+  const { organization: organisation, loading } = useOrganization();
 
   // Sync draft when organisation changes
   useEffect(() => {

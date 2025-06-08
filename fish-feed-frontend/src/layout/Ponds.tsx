@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { FiEdit2, FiPlus, FiX } from "react-icons/fi";
 import { PondService } from "../services/pond.service";
 import { PondForm } from "../forms/PondForm";
-import { useOrganisation } from "../hooks/useOrganisation";
+import { useOrganization } from "../hooks/useOrganization";
 
 const defaultNewPond: Partial<Pond> = {
   name: "",
@@ -26,8 +26,8 @@ export const Ponds = () => {
   const [editingPond, setEditingPond] = useState<Partial<Pond> | null>(null);
   const [saving, setSaving] = useState(false);
 
-  const organisation = useOrganisation((state) => state.organisation);
-  const organisationLoading = useOrganisation((state) => state.loading);
+  const organisation = useOrganization((state) => state.organization);
+  const organisationLoading = useOrganization((state) => state.loading);
 
   useEffect(() => {
     async function fetchPonds() {

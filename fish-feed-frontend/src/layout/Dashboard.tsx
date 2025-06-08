@@ -4,7 +4,7 @@ import { DeviceFactory } from "./DeviceFactory";
 import { WavyBackground } from "../components/WavyBackground";
 import { DeviceService } from "../services/device.service";
 import { PondService } from "../services/pond.service";
-import { useOrganisation } from "../hooks/useOrganisation";
+import { useOrganization } from "../hooks/useOrganization";
 import type { Device } from "../dto/device.dto";
 import type { Pond } from "../dto/pond.dto";
 import { AddDeviceModal } from "./AddDeviceModal";
@@ -16,7 +16,7 @@ export const Dashboard = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [deviceIdInput, setDeviceIdInput] = useState("");
 
-  const { organisation } = useOrganisation();
+  const { organization: organisation } = useOrganization();
 
   useEffect(() => {
     async function fetchPonds() {

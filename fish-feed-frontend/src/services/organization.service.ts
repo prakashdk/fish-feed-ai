@@ -1,5 +1,5 @@
 // src/services/organization.service.ts
-import type { Organization } from "@/dto/organisation.dto";
+import type { Organization } from "@/dto/organization.dto";
 import axios from "axios";
 import { API_BASE_URL } from "./api.constant";
 
