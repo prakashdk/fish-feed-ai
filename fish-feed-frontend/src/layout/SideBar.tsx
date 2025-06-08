@@ -1,7 +1,16 @@
-import AIBadge from "../components/AiBadge";
 import React from "react";
-import { FaHome, FaFish, FaChevronLeft } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import {
+  FiActivity,
+  FiBarChart2,
+  FiCheckSquare,
+  FiChevronLeft,
+  FiDroplet,
+  FiHeart,
+  FiHome,
+  FiTrendingUp
+} from "react-icons/fi";
+import { NavLink } from "react-router-dom";
+import AIBadge from "../components/AiBadge";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -15,44 +24,105 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
         isOpen ? "translate-x-0" : "-translate-x-full"
       } md:w-64`}
     >
-      <div className="flex justify-between items-center">
+      {/* Header */}
+      <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold select-none">Aqua AI</h2>
         <button
           onClick={toggleSidebar}
-          className="cursor-pointer rounded-full hover:bg-gray-700 p-2"
+          className="cursor-pointer rounded-full hover:bg-blue-800 p-2"
+          title="Close Sidebar"
         >
-          {isOpen ? <FaChevronLeft /> : "Open Sidebar"}
+          <FiChevronLeft />
         </button>
       </div>
-      <nav className="mt-8">
-        <ul className="space-y-4">
+
+      {/* Navigation */}
+      <nav>
+        <ul className="space-y-3 text-base font-medium">
           <li>
-            <Link
+            <NavLink
               to="/"
-              className="flex items-center space-x-3 text-lg hover:text-gray-300"
+              className={({ isActive }) =>
+                `flex items-center gap-3 px-3 py-2 rounded-lg transition ${
+                  isActive
+                    ? "bg-blue-800 text-white"
+                    : "hover:bg-blue-800 text-blue-100"
+                }`
+              }
             >
-              <FaHome />
-              <span>Dashboard</span>
-            </Link>
+              <FiHome size={18} />
+              Dashboard
+            </NavLink>
           </li>
+
           <li>
-            <Link
+            <NavLink
               to="/feed"
-              className="flex items-center space-x-3 text-lg hover:text-gray-300 "
+              className={({ isActive }) =>
+                `flex items-center gap-3 px-3 py-2 rounded-lg transition ${
+                  isActive
+                    ? "bg-blue-800 text-white"
+                    : "hover:bg-blue-800 text-blue-100"
+                }`
+              }
             >
-              <FaFish />
-              <div>Feed</div>
+              <FiActivity size={18} />
+              <span className="flex-1">Feed</span>
               <AIBadge />
-            </Link>
+            </NavLink>
+          </li>
+
+          <li>
+            <NavLink
+              to="/charts"
+              className={({ isActive }) =>
+                `flex items-center gap-3 px-3 py-2 rounded-lg transition ${
+                  isActive
+                    ? "bg-blue-800 text-white"
+                    : "hover:bg-blue-800 text-blue-100"
+                }`
+              }
+            >
+              <FiBarChart2 size={18} />
+              Feed Charts
+            </NavLink>
+          </li>
+
+          <li>
+            <NavLink
+              to="/ponds"
+              className={({ isActive }) =>
+                `flex items-center gap-3 px-3 py-2 rounded-lg transition ${
+                  isActive
+                    ? "bg-blue-800 text-white"
+                    : "hover:bg-blue-800 text-blue-100"
+                }`
+              }
+            >
+              <FiDroplet size={18} />
+              Ponds
+            </NavLink>
           </li>
           <li>
-            <Link
-              to="/ponds"
-              className="flex items-center space-x-3 text-lg hover:text-gray-300 "
-            >
-              <FaFish />
-              <div>Ponds</div>
-            </Link>
+            <div className="flex items-center gap-3 px-3 py-2 rounded-lg text-blue-100 opacity-50 cursor-not-allowed">
+              <FiTrendingUp size={18} />
+              <span className="flex-1">Insights</span>
+              <span className="text-xs text-yellow-300">Coming Soon</span>
+            </div>
+          </li>
+          <li>
+            <div className="flex items-center gap-3 px-3 py-2 rounded-lg text-blue-100 opacity-50 cursor-not-allowed">
+              <FiHeart size={18} />
+              <span className="flex-1">Health</span>
+              <span className="text-xs text-yellow-300">Coming Soon</span>
+            </div>
+          </li>
+          <li>
+            <div className="flex items-center gap-3 px-3 py-2 rounded-lg text-blue-100 opacity-50 cursor-not-allowed">
+              <FiCheckSquare size={18} />
+              <span className="flex-1">Tasks</span>
+              <span className="text-xs text-yellow-300">Coming Soon</span>
+            </div>
           </li>
         </ul>
       </nav>

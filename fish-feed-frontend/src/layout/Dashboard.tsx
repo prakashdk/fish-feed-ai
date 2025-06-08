@@ -16,21 +16,21 @@ export const Dashboard = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [deviceIdInput, setDeviceIdInput] = useState("");
 
-  const { organization: organisation } = useOrganization();
+  const { organization } = useOrganization();
 
   useEffect(() => {
     async function fetchPonds() {
-      if (!organisation?.id) return;
+      if (!organization?.id) return;
       try {
-        const data = await PondService.list(organisation.id);
+        const data = await PondService.list(organization.id);
         setPonds(data);
-        if (data.length > 0) setSelectedPondId(data[0].id);
+        if (data[0]?.id) setSelectedPondId(data[0].id);
       } catch (e) {
         console.error("Failed to load ponds", e);
       }
     }
     fetchPonds();
-  }, [organisation?.id]);
+  }, [organization?.id]);
 
   useEffect(() => {
     async function fetchDevices() {
@@ -71,6 +71,7 @@ export const Dashboard = () => {
             Select Pond
           </label>
           <select
+            title="Pond"
             className="border rounded px-4 py-2 w-full max-w-sm"
             value={selectedPondId ?? ""}
             onChange={(e) => setSelectedPondId(e.target.value)}

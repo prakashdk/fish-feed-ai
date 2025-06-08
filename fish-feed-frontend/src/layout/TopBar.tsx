@@ -1,5 +1,6 @@
 import React from "react";
 import { FaBars } from "react-icons/fa";
+import { FiBell } from "react-icons/fi";
 import UserProfile from "./UserProfile";
 
 interface TopBarProps {
@@ -35,7 +36,15 @@ export const TopBar: React.FC<TopBarProps> = ({
       </div>
 
       {/* Right side - User Profile */}
-      <div className="flex items-center">
+      <div className="flex items-center gap-4">
+        <button
+          title="Notifications"
+          className="relative p-2 rounded-full hover:bg-blue-800 transition"
+        >
+          <FiBell size={20} />
+          {/* Optional: notification dot */}
+          {/* <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span> */}
+        </button>
         <UserProfile />
       </div>
     </div>

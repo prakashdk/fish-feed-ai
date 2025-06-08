@@ -9,14 +9,14 @@ export const Account = () => {
   const [editMode, setEditMode] = useState(false);
   const [saving, setSaving] = useState(false);
 
-  const { organization: organisation, loading } = useOrganization();
+  const { organization, loading } = useOrganization();
 
-  // Sync draft when organisation changes
+  // Sync draft when organization changes
   useEffect(() => {
-    if (organisation) {
-      setDraft(organisation);
+    if (organization) {
+      setDraft(organization);
     }
-  }, [organisation]);
+  }, [organization]);
 
   if (loading) return <div>Loading organization info...</div>;
 
@@ -39,7 +39,7 @@ export const Account = () => {
   };
 
   const cancelEdit = () => {
-    if (organisation) setDraft(organisation);
+    if (organization) setDraft(organization);
     setEditMode(false);
   };
 
@@ -54,6 +54,7 @@ export const Account = () => {
         <h2 className="text-xl font-bold text-gray-900">Organization Info</h2>
         {!editMode ? (
           <button
+            title="Edit"
             onClick={() => setEditMode(true)}
             className="text-indigo-600 hover:text-indigo-800"
           >
@@ -86,16 +87,17 @@ export const Account = () => {
             </label>
             {editMode ? (
               <input
+                title="Organization"
                 type="text"
                 className="flex-1 border border-gray-300 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-indigo-400"
-                value={draft?.[field as keyof Organization] || ""}
+                value={draft?.[field as keyof Organization] ?? ""}
                 onChange={(e) =>
                   onChange(field as keyof Organization, e.target.value)
                 }
               />
             ) : (
               <p className="flex-1 text-gray-900">
-                {organisation?.[field as keyof Organization] || (
+                {organization?.[field as keyof Organization] || (
                   <i className="text-gray-400">Not set</i>
                 )}
               </p>
